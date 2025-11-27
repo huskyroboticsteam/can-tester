@@ -1,3 +1,5 @@
+import 'package:can_interface/dashboard.dart';
+import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
@@ -14,12 +16,11 @@ class MainApp extends StatelessWidget {
     final availablePorts = SerialPort.availablePorts;
     print(availablePorts);
 
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      title: "CAN Tester",
+      theme: ThemeData(colorScheme: darkColorScheme),
+      debugShowCheckedModeBanner: false,  // hide debug banner
+      home: Dashboard()
     );
   }
 }
