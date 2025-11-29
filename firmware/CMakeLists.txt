@@ -47,7 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
 
     # Include project source files (custom)
-    ${CMAKE_CURRENT_SOURCE_DIR}/User/app.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/app.c
 )
 
 # Add include paths
@@ -55,7 +55,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
 
     # Include project header files (custom)
-    ${CMAKE_CURRENT_SOURCE_DIR}/User/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/Inc
 )
 
 # Add project symbols (macros)

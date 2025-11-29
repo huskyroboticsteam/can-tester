@@ -95,8 +95,8 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  // Entry point for user code
-  run_app();
+  // Entry point for app code
+  RunApp();
 
   while (1)
   {
