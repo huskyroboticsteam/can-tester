@@ -19,7 +19,7 @@ SerialPort? searchAvailablePorts() {
     int? productId = port.productId;
 
     // check if this port corresponds to the board
-    if (vendorId == stProductId && productId == stProductId) {
+    if (vendorId == stVendorId && productId == stProductId) {
       return port;
     }
     port.dispose();
