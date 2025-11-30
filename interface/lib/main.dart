@@ -1,4 +1,5 @@
 import 'package:can_interface/dashboard.dart';
+import 'package:can_interface/serial.dart';
 import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
@@ -12,35 +13,29 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // list available serial ports
-    List<String> availablePorts = SerialPort.availablePorts;
-    print(availablePorts);
+    // get port that corresponds to board
+    SerialPort? port = searchAvailablePorts();
 
-    // get specific (3rd) serial port
-    String portName = availablePorts[2];
-    print("opening $portName");
-    SerialPort port = SerialPort(portName);
-
-    // print info about port
-    print("description : ${port.description}");
-    print("manufacturer: ${port.manufacturer}");
-    print("vendor id:    ${port.vendorId}");  // should be 1155
-    print("product id:   ${port.productId}"); // should be 22336
-    print("product name: ${port.productName}");
-
-
-    // open serial port
-    if (!port.openReadWrite()) {
-      print(SerialPort.lastError);
+    if (port == null) {
+      print("Could not find board serial port");
     } else {
-      // read callback for port
-      final reader = SerialPortReader(port);
-      reader.stream.listen((data) {
-        // callback
-        String str = String.fromCharCodes(data);
-        // print("received: $data");
-        print("received: $str");
-      });
+      // print info about port
+      printPortInfo(port);
+
+      // other...
+      // open serial port
+      if (!port.openReadWrite()) {
+        print(SerialPort.lastError);
+      } else {
+        // read callback for port
+        final reader = SerialPortReader(port);
+        reader.stream.listen((data) {
+          // callback
+          String str = String.fromCharCodes(data);
+          // print("received: $data");
+          print("received: $str");
+        });
+      }
     }
 
     return MaterialApp(
