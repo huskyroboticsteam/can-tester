@@ -22,17 +22,14 @@ class MainApp extends StatelessWidget {
       // print info about port
       printPortInfo(port);
 
-      // other...
       // open serial port
       if (!port.openReadWrite()) {
         print(SerialPort.lastError);
       } else {
-        // read callback for port
+        // read callback
         final reader = SerialPortReader(port);
         reader.stream.listen((data) {
-          // callback
           String str = String.fromCharCodes(data);
-          // print("received: $data");
           print("received: $str");
         });
       }

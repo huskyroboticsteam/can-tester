@@ -13,16 +13,20 @@ SerialPort? searchAvailablePorts() {
 
   // iterate over list of port names
   for (String portName in availablePorts) {
-    // get port attributes
-    SerialPort port = SerialPort(portName);
-    int? vendorId = port.vendorId;
-    int? productId = port.productId;
+    try {
+      // get port attributes
+      SerialPort port = SerialPort(portName);
+      int? vendorId = port.vendorId;
+      int? productId = port.productId;
 
-    // check if this port corresponds to the board
-    if (vendorId == stVendorId && productId == stProductId) {
-      return port;
+      // check if this port corresponds to the board
+      if (vendorId == stVendorId && productId == stProductId) {
+        return port;
+      }
+      port.dispose();
+    } catch (e) {
+      print(e);
     }
-    port.dispose();
   }
 
   // could not find a port corresponding to the board
