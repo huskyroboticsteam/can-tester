@@ -1,0 +1,3 @@
+[submodule "firmware-g4/CAN26"]
+	path = firmware-g4/CAN26
+	url = https://github.com/huskyroboticsteam/CAN26.git

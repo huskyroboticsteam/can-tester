@@ -50,11 +50,17 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+
+    # CAN26 submodule
+    ${CMAKE_CURRENT_SOURCE_DIR}/CAN26
 )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
+
+    # CAN26 submodule
+    CHIP_TYPE=CHIP_TYPE_STM32_G4XX
 )
 
 # Remove wrong libob.a library dependency when using cpp files
