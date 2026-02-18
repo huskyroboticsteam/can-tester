@@ -180,9 +180,58 @@ class DeviceCard extends StatefulWidget {
 
 class _DeviceCardState extends State<DeviceCard> {
   Set<Options> selection = <Options>{};
+  String uuidText = "";
+  String cmdText = "";
+  String dlcText = "";
 
   @override
   Widget build(BuildContext context) {
+    // extract segmented button fields, representing as 1 if selected
+    final String priority = (selection.contains(Options.priority)) ? "1" : "0";
+    final String power = (selection.contains(Options.power)) ? "1" : "0";
+    final String motor = (selection.contains(Options.motor)) ? "1" : "0";
+    final String peripheral = (selection.contains(Options.peripheral))
+        ? "1"
+        : "0";
+
+    // form binary str. of UUID, verify is 2 digits long, <=127, and is valid hex.
+    final int? uuidAsInt = int.tryParse(uuidText, radix: 16);
+    final bool uuidValid =
+        uuidText.length == 2 && uuidAsInt != null && uuidAsInt <= 127;
+    final String uuidStr = (uuidValid)
+        ? uuidAsInt.toRadixString(2).toUpperCase().padLeft(7, "0")
+        : "XXXXXXX";
+
+    // form address
+    String address = priority + uuidStr + power + motor + peripheral;
+
+    // form binary str. of command ID, verify is 2 digits long and is valid hex.
+    final int? cmdAsInt = int.tryParse(cmdText, radix: 16);
+    final bool cmdValid = cmdText.length == 2 && cmdAsInt != null;
+    final String cmdStr = (cmdValid)
+        ? cmdAsInt.toRadixString(2).toUpperCase().padLeft(8, "0")
+        : "XXXXXXXX";
+
+    // form DLC str., verify is <=8 and is valid dec.
+    final int? dlcAsInt = int.tryParse(dlcText, radix: 10);
+    final bool dlcValid = dlcAsInt != null && dlcAsInt <= 8;
+    final String dlcStr = (dlcValid)
+        ? dlcAsInt.toRadixString(2).toUpperCase().padLeft(4, "0")
+        : "XXXX";
+
+    // generate error string TODO: format list commas
+    List<String> errorList = [];
+    if (!uuidValid) {
+      errorList.add("UUID: Invalid Hex (2-digit, <0x80)");
+    }
+    if (!cmdValid) {
+      errorList.add("Cmd: Invalid Hex (2-digit, <0x80)");
+    }
+
+    // form full packet as string
+    String generatedPacket = "$address [dlc] $cmdStr 1110001 [6 bytes]";
+    print("gen packet: $generatedPacket");
+
     return Padding(
       padding: const EdgeInsets.only(left: 60, right: 60, top: 60),
       child: Container(
@@ -204,16 +253,6 @@ class _DeviceCardState extends State<DeviceCard> {
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: darkColorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 75,
-                  child: TextField(
-                    style: TextStyle(color: darkColorScheme.onSecondary),
-                    decoration: InputDecoration(
-                      labelText: "UUID (7)",
-                      labelStyle: TextStyle(color: darkColorScheme.onSecondary),
                     ),
                   ),
                 ),
@@ -266,15 +305,92 @@ class _DeviceCardState extends State<DeviceCard> {
                   child: IconButton.filled(
                     onPressed: () {},
                     icon: Icon(Icons.close_rounded),
-                    tooltip: "Not implemented: Remove this device entry",
+                    tooltip: "Not implemented: Remove this device",
                   ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 30, bottom: 12),
+              padding: const EdgeInsets.only(left: 30, right: 8, bottom: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: SizedBox(
+                      width: 90,
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            uuidText = value;
+                          });
+                        },
+                        style: TextStyle(color: darkColorScheme.onSecondary),
+                        decoration: InputDecoration(
+                          labelText: "UUID (2h)",
+                          labelStyle: TextStyle(
+                            color: darkColorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton.filled(
+                    onPressed: () {},
+                    icon: Icon(Icons.error_outline_outlined),
+                    tooltip: errorList.join(", "),
+                  ),
+                  // Text(
+                  //   errorList.join(", "),
+                  //   style: TextStyle(color: darkColorScheme.onError),
+                  // ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 30, bottom: 14),
               child: Row(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: SizedBox(
+                      width: 90,
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            cmdText = value;
+                          });
+                        },
+                        style: TextStyle(color: darkColorScheme.onSecondary),
+                        decoration: InputDecoration(
+                          labelText: "Cmd. (2h)",
+                          labelStyle: TextStyle(
+                            color: darkColorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: SizedBox(
+                      width: 90,
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            dlcText = value;
+                          });
+                        },
+                        style: TextStyle(color: darkColorScheme.onSecondary),
+                        decoration: InputDecoration(
+                          labelText: "DLC (1d)",
+                          labelStyle: TextStyle(
+                            color: darkColorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
                     child: SizedBox(
@@ -366,36 +482,6 @@ class _DeviceCardState extends State<DeviceCard> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 6",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 7",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: IconButton.filled(
                       onPressed: () {},
@@ -403,6 +489,23 @@ class _DeviceCardState extends State<DeviceCard> {
                       color: darkColorScheme.onSecondary,
                       tooltip: "Send packet over USB to CAN bus",
                     ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 4,
+                bottom: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Frame: $generatedPacket",
+                    style: TextStyle(color: darkColorScheme.onSecondary),
                   ),
                 ],
               ),
@@ -436,7 +539,7 @@ class Dashboard extends StatelessWidget {
                       Expanded(child: ListView(children: [DeviceCard()])),
                       FloatingActionButton.extended(
                         onPressed: () {},
-                        tooltip: "Send E-STOP",
+                        tooltip: "Not implemented: Send E-STOP",
                         backgroundColor: darkColorScheme.primary,
                         foregroundColor: darkColorScheme.onSecondary,
                         icon: Icon(Icons.cancel_outlined),
