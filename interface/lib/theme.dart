@@ -7,7 +7,7 @@ const darkColorScheme = ColorScheme(
   secondary: Color.fromRGBO(38, 34, 43, 1),
   onSecondary: Color.fromRGBO(227, 217, 247, 1),
   error: Colors.red,
-  onError: Colors.redAccent,
-  surface: Color.fromRGBO(15, 15, 15, 1),
+  onError: Color.fromRGBO(255, 162, 169, 1),
+  surface: Color.fromRGBO(59, 52, 64, 1),
   onSurface: Colors.white,
 );

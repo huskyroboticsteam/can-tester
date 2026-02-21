@@ -1,3 +1,4 @@
+import 'package:can_interface/can-frame.dart';
 import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -6,75 +7,66 @@ class TitleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      child: Center(
-        child: FractionallySizedBox(
-          widthFactor: 0.6,
-          child: SizedBox(
-            height: 55,
-            child: Card.filled(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(55 / 2),
-              ),
-              color: darkColorScheme.primary,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Text(
-                      "CAN Tester",
-                      style: TextStyle(
-                        color: Color.fromRGBO(227, 217, 247, 1),
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
-                      ),
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: 0.6,
+        child: SizedBox(
+          height: 55,
+          child: Card.filled(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(55 / 2),
+            ),
+            color: darkColorScheme.primary,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  child: Text(
+                    "CAN Tester",
+                    style: TextStyle(
+                      color: Color.fromRGBO(227, 217, 247, 1),
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 2,
-                          vertical: 4,
-                        ),
-                        child: IconButton(
-                          color: darkColorScheme.onSecondary,
-                          onPressed: () {},
-                          icon: Icon(Icons.bug_report_outlined),
-                          tooltip: "Not implemented: Issues",
-                        ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+                      child: IconButton(
+                        color: darkColorScheme.onSecondary,
+                        onPressed: () {},
+                        icon: Icon(Icons.bug_report_outlined),
+                        tooltip: "Not implemented: Issues",
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 2,
-                          vertical: 4,
-                        ),
-                        child: IconButton(
-                          color: darkColorScheme.onSecondary,
-                          onPressed: () {},
-                          icon: Icon(Icons.help_outline_rounded),
-                          tooltip: "Not implemented: Help",
-                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+                      child: IconButton(
+                        color: darkColorScheme.onSecondary,
+                        onPressed: () {},
+                        icon: Icon(Icons.help_outline_rounded),
+                        tooltip: "Not implemented: Help",
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 2,
-                          vertical: 4,
-                        ),
-                        child: IconButton(
-                          color: darkColorScheme.onSecondary,
-                          onPressed: () {},
-                          icon: Icon(Icons.add_rounded),
-                          tooltip: "Not implemented: Add another device",
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 4,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                      child: IconButton(
+                        color: darkColorScheme.onSecondary,
+                        onPressed: () {},
+                        icon: Icon(Icons.add_rounded),
+                        tooltip: "Not implemented: Add another device",
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -181,56 +173,12 @@ class DeviceCard extends StatefulWidget {
 class _DeviceCardState extends State<DeviceCard> {
   Set<Options> selection = <Options>{};
   String uuidText = "";
-  String cmdText = "";
-  String dlcText = "";
+  final canFrameKeys = <int>[0]; // initially have 1 CanFrame
+  int nextCanFrameKey = 1;
 
   @override
   Widget build(BuildContext context) {
-    // extract segmented button fields, representing as 1 if selected
-    final String priority = (selection.contains(Options.priority)) ? "1" : "0";
-    final String power = (selection.contains(Options.power)) ? "1" : "0";
-    final String motor = (selection.contains(Options.motor)) ? "1" : "0";
-    final String peripheral = (selection.contains(Options.peripheral))
-        ? "1"
-        : "0";
-
-    // form binary str. of UUID, verify is 2 digits long, <=127, and is valid hex.
-    final int? uuidAsInt = int.tryParse(uuidText, radix: 16);
-    final bool uuidValid =
-        uuidText.length == 2 && uuidAsInt != null && uuidAsInt <= 127;
-    final String uuidStr = (uuidValid)
-        ? uuidAsInt.toRadixString(2).toUpperCase().padLeft(7, "0")
-        : "XXXXXXX";
-
-    // form address
-    String address = priority + uuidStr + power + motor + peripheral;
-
-    // form binary str. of command ID, verify is 2 digits long and is valid hex.
-    final int? cmdAsInt = int.tryParse(cmdText, radix: 16);
-    final bool cmdValid = cmdText.length == 2 && cmdAsInt != null;
-    final String cmdStr = (cmdValid)
-        ? cmdAsInt.toRadixString(2).toUpperCase().padLeft(8, "0")
-        : "XXXXXXXX";
-
-    // form DLC str., verify is <=8 and is valid dec.
-    final int? dlcAsInt = int.tryParse(dlcText, radix: 10);
-    final bool dlcValid = dlcAsInt != null && dlcAsInt <= 8;
-    final String dlcStr = (dlcValid)
-        ? dlcAsInt.toRadixString(2).toUpperCase().padLeft(4, "0")
-        : "XXXX";
-
-    // generate error string TODO: format list commas
-    List<String> errorList = [];
-    if (!uuidValid) {
-      errorList.add("UUID: Invalid Hex (2-digit, <0x80)");
-    }
-    if (!cmdValid) {
-      errorList.add("Cmd: Invalid Hex (2-digit, <0x80)");
-    }
-
-    // form full packet as string
-    String generatedPacket = "$address [dlc] $cmdStr 1110001 [6 bytes]";
-    print("gen packet: $generatedPacket");
+    final int? uuidInt = int.tryParse(uuidText, radix: 16);
 
     return Padding(
       padding: const EdgeInsets.only(left: 60, right: 60, top: 60),
@@ -239,6 +187,7 @@ class _DeviceCardState extends State<DeviceCard> {
           color: darkColorScheme.secondary,
           borderRadius: BorderRadius.circular(30),
         ),
+        padding: EdgeInsets.only(top: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -250,262 +199,167 @@ class _DeviceCardState extends State<DeviceCard> {
                   child: Text(
                     "Device",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.w600,
                       color: darkColorScheme.onPrimary,
                     ),
                   ),
                 ),
-                SegmentedButton(
-                  segments: [
-                    ButtonSegment(
-                      value: Options.priority,
-                      label: Text(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        "Priority",
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: SizedBox(
+                        width: 95,
+                        child: TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              uuidText = value;
+                            });
+                          },
+                          style: TextStyle(color: darkColorScheme.onSecondary),
+                          cursorColor: darkColorScheme.onSecondary,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            // label: Center(child: Text("UUID")),
+                            hint: Text(
+                              "UUID",
+                              style: TextStyle(
+                                color: darkColorScheme.onSecondary,
+                                fontSize: 16,
+                              ),
+                            ),
+                            prefix: Text(
+                              "0x",
+                              style: TextStyle(
+                                color: darkColorScheme.onSecondary,
+                                fontSize: 16.5,
+                              ),
+                            ),
+                            labelStyle: TextStyle(
+                              color: darkColorScheme.onSecondary,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide(
+                                color: darkColorScheme.onSecondary,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide(
+                                color: darkColorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
+                          // textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                    ButtonSegment(
-                      value: Options.power,
-                      label: Text(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        "Power",
-                      ),
-                    ),
-                    ButtonSegment(
-                      value: Options.motor,
-                      label: Text(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        "Motor",
-                      ),
-                    ),
-                    ButtonSegment(
-                      value: Options.peripheral,
-                      label: Text(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        "Peripheral",
+                    SegmentedButton(
+                      segments: [
+                        ButtonSegment(
+                          value: Options.priority,
+                          label: Text(
+                            style: TextStyle(
+                              color: darkColorScheme.onSecondary,
+                            ),
+                            "Priority",
+                          ),
+                        ),
+                        ButtonSegment(
+                          value: Options.power,
+                          label: Text(
+                            style: TextStyle(
+                              color: darkColorScheme.onSecondary,
+                            ),
+                            "Power",
+                          ),
+                        ),
+                        ButtonSegment(
+                          value: Options.motor,
+                          label: Text(
+                            style: TextStyle(
+                              color: darkColorScheme.onSecondary,
+                            ),
+                            "Motor",
+                          ),
+                        ),
+                        ButtonSegment(
+                          value: Options.peripheral,
+                          label: Text(
+                            style: TextStyle(
+                              color: darkColorScheme.onSecondary,
+                            ),
+                            "Peripheral",
+                          ),
+                        ),
+                      ],
+                      selected: selection,
+                      onSelectionChanged: (Set<Options> newSelection) {
+                        setState(() {
+                          selection = newSelection;
+                        });
+                      },
+                      multiSelectionEnabled: true,
+                      emptySelectionAllowed: true,
+                      style: SegmentedButton.styleFrom(
+                        side: BorderSide(color: darkColorScheme.onSecondary),
+                        selectedBackgroundColor: darkColorScheme.primary,
                       ),
                     ),
                   ],
-                  selected: selection,
-                  onSelectionChanged: (Set<Options> newSelection) {
-                    setState(() {
-                      selection = newSelection;
-                    });
-                  },
-                  multiSelectionEnabled: true,
-                  emptySelectionAllowed: true,
-                  style: SegmentedButton.styleFrom(
-                    side: BorderSide(color: darkColorScheme.onSecondary),
-                    selectedBackgroundColor: darkColorScheme.primary,
-                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: IconButton.filled(
-                    onPressed: () {},
-                    icon: Icon(Icons.close_rounded),
-                    tooltip: "Not implemented: Remove this device",
-                  ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: IconButton.filled(
+                        onPressed: () {
+                          setState(() {
+                            // add new CanFrame card key to list for re-render
+                            nextCanFrameKey++; // increment key id
+                            canFrameKeys.add(nextCanFrameKey);
+                          });
+                        },
+                        icon: Icon(Icons.add_rounded),
+                        color: darkColorScheme.onSecondary,
+                        tooltip: "Add frame",
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: IconButton.filled(
+                        onPressed: () {},
+                        icon: Icon(Icons.close_rounded),
+                        tooltip: "Not implemented: Remove this device",
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 30, right: 8, bottom: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            uuidText = value;
-                          });
-                        },
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "UUID (2h)",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton.filled(
-                    onPressed: () {},
-                    icon: Icon(Icons.error_outline_outlined),
-                    tooltip: errorList.join(", "),
-                  ),
-                  // Text(
-                  //   errorList.join(", "),
-                  //   style: TextStyle(color: darkColorScheme.onError),
-                  // ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, bottom: 14),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            cmdText = value;
-                          });
-                        },
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Cmd. (2h)",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            dlcText = value;
-                          });
-                        },
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "DLC (1d)",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 0",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 1",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 2",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 3",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 4",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SizedBox(
-                      width: 90,
-                      child: TextField(
-                        style: TextStyle(color: darkColorScheme.onSecondary),
-                        decoration: InputDecoration(
-                          labelText: "Byte 5",
-                          labelStyle: TextStyle(
-                            color: darkColorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: IconButton.filled(
-                      onPressed: () {},
-                      icon: Icon(Icons.arrow_upward_rounded),
-                      color: darkColorScheme.onSecondary,
-                      tooltip: "Send packet over USB to CAN bus",
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.only(
+                top: 20,
+                bottom: 20 - 8,
                 left: 20,
                 right: 20,
-                top: 4,
-                bottom: 10,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  Text(
-                    "Frame: $generatedPacket",
-                    style: TextStyle(color: darkColorScheme.onSecondary),
+                  ...canFrameKeys.map(
+                    (key) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: CanFrame(
+                        key: ValueKey(key),
+                        uuid: uuidInt,
+                        prioritySel: selection.contains(Options.priority),
+                        powerSel: selection.contains(Options.power),
+                        motorSel: selection.contains(Options.motor),
+                        peripheralSel: selection.contains(Options.peripheral),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -528,7 +382,10 @@ class Dashboard extends StatelessWidget {
       backgroundColor: Color.fromRGBO(20, 18, 23, 1),
       body: Column(
         children: [
-          TitleBar(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: TitleBar(),
+          ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

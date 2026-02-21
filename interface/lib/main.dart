@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'dart:typed_data';
+
 import 'package:can_interface/dashboard.dart';
 import 'package:can_interface/serial.dart';
 import 'package:can_interface/theme.dart';
@@ -26,6 +29,12 @@ class MainApp extends StatelessWidget {
       if (!port.openReadWrite()) {
         print(SerialPort.lastError);
       } else {
+        // write to port
+        final testMsg = "TESTING.";
+        print("wrote test msg");
+        print(testMsg.codeUnits);
+        port.write(Uint8List.fromList(testMsg.codeUnits));
+
         // read callback
         final reader = SerialPortReader(port);
         reader.stream.listen((data) {
