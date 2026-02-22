@@ -43,7 +43,7 @@ class _PortSelectorState extends State<PortSelector> {
                     ).setSelPortName(newName);
                   },
                   hint: Text(
-                    "Select Port",
+                    (availablePorts.isEmpty ? "No Ports Found" : "Select Port"),
                     style: TextStyle(color: darkColorScheme.onPrimary),
                   ),
                   dropdownColor: darkColorScheme.secondary,
