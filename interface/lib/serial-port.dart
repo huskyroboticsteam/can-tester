@@ -52,12 +52,19 @@ class PortModel extends ChangeNotifier {
   static (List<PortInfo>, bool err) _getAvailablePorts() {
     List<PortInfo> res = [];
 
+    // get port names from OS
+    final List<String>? portNames;
     try {
-      // get port names from OS
-      final List<String> portNames = SerialPort.availablePorts;
+      portNames = SerialPort.availablePorts;
+    } catch (_) {
+      print("ERROR: Could not get port names; ${SerialPort.lastError}");
+      return ([], true);
+    }
 
-      // extract port attributes and store in list
-      for (String name in portNames) {
+    // extract port attributes for each port name, and store in list
+    // if an exception is thrown on one port, skip it but log the error
+    for (String name in portNames) {
+      try {
         // get serial port instance
         final SerialPort port = SerialPort(name);
 
@@ -72,13 +79,12 @@ class PortModel extends ChangeNotifier {
 
         // release resources
         port.dispose();
+      } catch (_) {
+        // an error occured on this specific port
+        print("ERROR: Issue with port $name; ${SerialPort.lastError}");
       }
-      return (res, false);
-    } catch (_) {
-      // an error occured (somewhere) above
-      print("ERROR: Could not refresh ports; ${SerialPort.lastError}");
-      return (res, true);
     }
+    return (res, false);
   }
 
   /// Open the selected port for read-write.
