@@ -1,14 +1,20 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:can_interface/dashboard.dart';
+import 'package:can_interface/serial-port.dart';
 import 'package:can_interface/serial.dart';
 import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => PortModel(),
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {

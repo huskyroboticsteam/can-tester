@@ -282,8 +282,7 @@ class _CanFrameState extends State<CanFrame> {
                 ? IconButton.filled(
                     onPressed: () {
                       // TODO: send packet over usb
-                      print("SEND: ");
-                      
+                      print("SEND pressed");
                     },
                     icon: Icon(Icons.arrow_upward_rounded),
                     color: darkColorScheme.onSecondary,
