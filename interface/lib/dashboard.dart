@@ -15,26 +15,38 @@ class Dashboard extends StatelessWidget {
       backgroundColor: Color.fromRGBO(20, 18, 23, 1),
       body: Column(
         children: [
+          // title bar
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: TitleBar(),
           ),
+          // everything below TitleBar should fill height
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // left side (with DeviceCards) should fill width
                 Expanded(
-                  child: Column(
+                  child: Stack(
                     children: [
+                      // scrollable list of DeviceCard widgets
                       Expanded(child: ListView(children: [DeviceCard()])),
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        tooltip: "Not implemented: Send E-STOP",
-                        backgroundColor: darkColorScheme.primary,
-                        foregroundColor: darkColorScheme.onSecondary,
-                        icon: Icon(Icons.cancel_outlined),
-                        label: Text("E-STOP"),
+                      // e-stop button
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: FloatingActionButton.extended(
+                            label: Text("E-STOP"),
+                            onPressed: () {},
+                            tooltip: "Not implemented: Send E-STOP",
+                            backgroundColor: darkColorScheme.primary,
+                            foregroundColor: darkColorScheme.onSecondary,
+                            icon: Icon(Icons.cancel_outlined),
+                          ),
+                        ),
                       ),
+                      // attribution/version message
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 6,
@@ -53,6 +65,7 @@ class Dashboard extends StatelessWidget {
                     ],
                   ),
                 ),
+                // Terminal on right-side
                 Terminal(),
               ],
             ),
