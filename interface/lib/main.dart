@@ -23,37 +23,55 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // get port that corresponds to board
-    SerialPort? port = searchAvailablePorts();
+    // SerialPort? port = searchAvailablePorts();
 
-    if (port == null) {
-      print("Could not find board serial port");
-    } else {
-      // print info about port
-      printPortInfo(port);
+    List<String> availablePorts = SerialPort.availablePorts;
 
-      // open serial port
-      if (!port.openReadWrite()) {
-        print(SerialPort.lastError);
-      } else {
-        // write to port
-        final testMsg = "TESTING.";
-        print("wrote test msg");
-        print(testMsg.codeUnits);
-        port.write(Uint8List.fromList(testMsg.codeUnits));
+    // iterate over list of port names
+    for (String portName in availablePorts) {
+      try {
+        // get port attributes
+        SerialPort port = SerialPort(portName);
+        int? vendorId = port.vendorId;
+        int? productId = port.productId;
 
-        // read callback
-        final reader = SerialPortReader(port);
-        reader.stream.listen((data) {
-          String str = String.fromCharCodes(data);
-          print("received: $str");
-        });
+        print("PORT $portName ${port.description} (${port.vendorId}, ${port.productId})");
+
+        port.dispose();
+      } catch (e) {
+        print(e);
       }
     }
+
+    // if (port == null) {
+    //   print("Could not find board serial port");
+    // } else {
+    //   // print info about port
+    //   printPortInfo(port);
+
+    //   // open serial port
+    //   if (!port.openReadWrite()) {
+    //     print(SerialPort.lastError);
+    //   } else {
+    //     // write to port
+    //     final testMsg = "TESTING.";
+    //     print("wrote test msg");
+    //     print(testMsg.codeUnits);
+    //     port.write(Uint8List.fromList(testMsg.codeUnits));
+
+    //     // read callback
+    //     final reader = SerialPortReader(port);
+    //     reader.stream.listen((data) {
+    //       String str = String.fromCharCodes(data);
+    //       print("received: $str");
+    //     });
+    //   }
+    // }
 
     return MaterialApp(
       title: "CAN Tester",
       theme: ThemeData(colorScheme: darkColorScheme),
-      debugShowCheckedModeBanner: false, // hide debug banner
+      // debugShowCheckedModeBanner: false, // hide debug banner
       home: Dashboard(),
     );
   }

@@ -30,7 +30,7 @@ class Dashboard extends StatelessWidget {
                   child: Stack(
                     children: [
                       // scrollable list of DeviceCard widgets
-                      Expanded(child: ListView(children: [DeviceCard()])),
+                      ListView(children: [DeviceCard()]),
                       // e-stop button
                       Align(
                         alignment: Alignment.bottomCenter,

@@ -14,7 +14,7 @@ class _PortSelectorState extends State<PortSelector> {
   @override
   Widget build(BuildContext context) {
     // listen/get list of port names from model
-    List<String> availablePorts = Provider.of<PortModel>(
+    List<PortInfo> availablePorts = Provider.of<PortModel>(
       context,
       listen: true,
     ).availablePorts;
@@ -26,7 +26,7 @@ class _PortSelectorState extends State<PortSelector> {
             color: darkColorScheme.secondary,
             borderRadius: BorderRadius.circular(30),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 4),
+          padding: EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
               Padding(
@@ -52,20 +52,39 @@ class _PortSelectorState extends State<PortSelector> {
                     height: 0,
                   ),
                   items: availablePorts.map<DropdownMenuItem<String>>((
-                    portName,
+                    portInfo,
                   ) {
                     return DropdownMenuItem<String>(
-                      value: portName,
+                      value: portInfo.name,
                       child: SizedBox(
                         width: 240,
-                        child: Tooltip(
-                          message: portName,
-                          child: Text(
-                            portName,
-                            style: TextStyle(color: darkColorScheme.onPrimary),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 3, bottom: 0),
+                              child: Text(
+                                portInfo.name,
+                                style: TextStyle(
+                                  color: darkColorScheme.onPrimary,
+                                  fontSize: 14.5,
+                                  fontFamily: "JetBrainsMono",
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            Text(
+                              portInfo.description ?? "--",
+                              style: TextStyle(
+                                color: darkColorScheme.onSecondary,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -94,11 +113,13 @@ class _PortSelectorState extends State<PortSelector> {
                                 : "ERROR: Could not retrieve available ports"),
                             style: TextStyle(
                               color: darkColorScheme.onSecondary,
-                              fontSize: 16,
+                              fontSize: 15,
                             ),
                           ),
                         ),
-                        backgroundColor: darkColorScheme.primary,
+                        backgroundColor: (refreshSuccess
+                            ? darkColorScheme.primary
+                            : darkColorScheme.error),
                       ),
                     );
                   },
