@@ -175,7 +175,8 @@ class TitleBar extends StatelessWidget {
                         onPressed: () {
                           // test adding a new packet to the TerminalModel
                           CanPacket newPacket = CanPacket(uuid: 0, cmd: 1, dlc: 2, priority: true, power: true, motor: false, peripheral: true, data: [1, 2, 3]);
-                          TerminalModel().addPacket(newPacket);
+                          PacketRowData newRow = PacketRowData(packet: newPacket, time: DateTime.now());
+                          TerminalModel().addRow(newRow);
                         },
                         icon: Icon(Icons.bug_report_outlined),
                         tooltip: "TEMP: Add packet to received list",
