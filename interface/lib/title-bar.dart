@@ -1,4 +1,6 @@
+import 'package:can_interface/can.dart';
 import 'package:can_interface/serial-port.dart';
+import 'package:can_interface/terminal.dart';
 import 'package:flutter/material.dart';
 import 'package:can_interface/theme.dart';
 import 'package:provider/provider.dart';
@@ -170,9 +172,13 @@ class TitleBar extends StatelessWidget {
                       padding: EdgeInsets.only(left: 4, right: 2),
                       child: IconButton(
                         color: darkColorScheme.onSecondary,
-                        onPressed: () {},
+                        onPressed: () {
+                          // test adding a new packet to the TerminalModel
+                          CanPacket newPacket = CanPacket(uuid: 0, cmd: 1, dlc: 2, priority: true, power: true, motor: false, peripheral: true, data: [1, 2, 3]);
+                          TerminalModel().addPacket(newPacket);
+                        },
                         icon: Icon(Icons.bug_report_outlined),
-                        tooltip: "Not implemented: Issues",
+                        tooltip: "TEMP: Add packet to received list",
                       ),
                     ),
                     Padding(

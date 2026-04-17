@@ -1,8 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:can_interface/dashboard.dart';
 import 'package:can_interface/serial-port.dart';
-import 'package:can_interface/serial.dart';
+import 'package:can_interface/terminal.dart';
 import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
@@ -10,8 +8,13 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => PortModel(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => PortModel()),
+        ChangeNotifierProvider.value(
+          value: TerminalModel(),
+        ),
+      ],
       child: const MainApp(),
     ),
   );
@@ -35,7 +38,9 @@ class MainApp extends StatelessWidget {
         int? vendorId = port.vendorId;
         int? productId = port.productId;
 
-        print("PORT $portName ${port.description} (${port.vendorId}, ${port.productId})");
+        print(
+          "PORT $portName ${port.description} (${port.vendorId}, ${port.productId})",
+        );
 
         port.dispose();
       } catch (e) {
