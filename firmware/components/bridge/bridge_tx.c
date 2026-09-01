@@ -2,7 +2,7 @@
 #include "util.h"
 #include "esp_rom_crc.h"
 
-// Each frame is sent with a incrementing index so the receiver can detect dropped frames
+// Each frame is sent with an incrementing index so the receiver can detect dropped frames
 static uint8_t tx_frame_index = 0;
 
 bridge_ret_t bridge_tx(const CANPacket_t* packet) {

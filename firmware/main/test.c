@@ -4,6 +4,7 @@
 
 #define TAG "TEST"
 
+// Log a CAN packet in a human-readable format
 void log_packet(const CANPacket_t* p) {
     if (!p) {
         ESP_LOGI(TAG, "<NULL>");
@@ -12,7 +13,7 @@ void log_packet(const CANPacket_t* p) {
 
     ESP_LOGI(
         TAG,
-        "[RX]\n  per: %u\n  mot: %u\n  pow: %u\n  uuid: 0x%02X\ncmd: %d\nsender: 0x%02X\ndata(%d): { %02d %02d %02d %02d %02d %02d }",
+        "[CAN]\n  per: %u\n  mot: %u\n  pow: %u\n  uuid: 0x%02X\ncmd: %d\nsender: 0x%02X\ndata(%d): { %02d %02d %02d %02d %02d %02d }",
         (unsigned)p->device.peripheralDomain,
         (unsigned)p->device.motorDomain,
         (unsigned)p->device.powerDomain,
@@ -24,6 +25,8 @@ void log_packet(const CANPacket_t* p) {
         p->contents[3], p->contents[4], p->contents[5]);
 }
 
+// Send 4 CAN packets that should be accepted (in loopback mode),
+// and send 2 CAN packets that should be filtered out.
 void send_tests(CANDeviceUUID_t our_uuid) {
     const uint8_t num_test_packets = 6;
     CANPacket_t packets[num_test_packets];
