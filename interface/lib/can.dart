@@ -1,6 +1,6 @@
 /// TODO
 class CanPacket {
-  int uuid, cmd, dlc;
+  int uuid, cmd, dlc, senderUuid;
   bool priority, power, motor, peripheral;
   List<int> data;
 
@@ -13,6 +13,7 @@ class CanPacket {
     required this.motor,
     required this.peripheral,
     required this.data,
+    required this.senderUuid,
   });
 
   /// Verify UUID is 7-bit unsigned int.

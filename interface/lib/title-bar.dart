@@ -174,7 +174,7 @@ class TitleBar extends StatelessWidget {
                         color: darkColorScheme.onSecondary,
                         onPressed: () {
                           // test adding a new packet to the TerminalModel
-                          CanPacket newPacket = CanPacket(uuid: 0, cmd: 1, dlc: 2, priority: true, power: true, motor: false, peripheral: true, data: [1, 2, 3]);
+                          CanPacket newPacket = CanPacket(uuid: 0, cmd: 1, dlc: 2, priority: true, power: true, motor: false, peripheral: true, data: [1, 2, 3], senderUuid: 12);
                           PacketRowData newRow = PacketRowData(packet: newPacket, time: DateTime.now());
                           TerminalModel().addRow(newRow);
                         },

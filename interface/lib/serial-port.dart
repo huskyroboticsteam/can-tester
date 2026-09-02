@@ -1,3 +1,4 @@
+import 'package:can_interface/bridge.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
@@ -16,17 +17,28 @@ class PortInfo {
 }
 
 class PortModel extends ChangeNotifier {
-  // List<String> _availablePorts;
-  String? _selPortName;
-  List<PortInfo> _availablePorts;
+  String? _selPortName; // the currently selected port
+  List<PortInfo> _availablePorts; // list of available ports
+  SerialPort? _openPort; // the currently open port
+  final _bridge = Bridge();
 
+  // constructor: populate the available ports list
   PortModel() : _availablePorts = _getAvailablePorts().$1;
 
-  List<PortInfo> get availablePorts => _availablePorts;
+  // getters
   String? get selPortName => _selPortName;
+  List<PortInfo> get availablePorts => _availablePorts;
 
+  /// Update which port is selected. Notifies listeners of change.
   void setSelPortName(String? newName) {
     _selPortName = newName;
+
+    // close the old port
+    _openPort?.dispose();
+
+    // open port
+    _openSelPort();
+
     notifyListeners();
   }
 
@@ -36,19 +48,19 @@ class PortModel extends ChangeNotifier {
     List<PortInfo> ports;
     bool err;
     (ports, err) = _getAvailablePorts();
-    _availablePorts = ports;
+    if (err) {
+      return false;
+    }
 
-    // prevent crashing when the selected USB device is disconnected
-    _selPortName = null;
+    _availablePorts = ports; // reassign list of ports
+    _selPortName = null; // the user must reselect a port
 
     notifyListeners();
-
-    return !err;
+    return true;
   }
 
   /// Retrieve list of ports from OS. Returns the list, and does
   /// not modify this instance's data members.
-  /// Returns: TODO
   static (List<PortInfo>, bool err) _getAvailablePorts() {
     List<PortInfo> res = [];
 
@@ -92,25 +104,42 @@ class PortModel extends ChangeNotifier {
   /// be opened.
   bool _openSelPort() {
     String? portName = _selPortName;
-    // cannot open if port is not selected
     if (portName == null) {
-      return false;
+      return false; // no port selected
     }
 
-    // attempt to open port
     try {
+      // attempt to open port
       SerialPort port = SerialPort(portName);
       if (!port.openReadWrite()) {
         // could not open port
-        print(SerialPort.lastError);
-      } else {
-        // register read callback on port
-        final reader = SerialPortReader(port);
-        reader.stream.listen((data) {
-          String str = String.fromCharCodes(data);
-          print("received: $str");
-        });
+        print("ERROR: Failed to open port; ${SerialPort.lastError}");
+        return false;
       }
+      print("Opened port: $portName");
+      _openPort = port;
+
+      // port configuration
+      final config = SerialPortConfig();
+      config.baudRate = 115200; // set baud rate
+      config.bits = 8;
+      config.parity = SerialPortParity.none;
+      config.stopBits = 1;
+      port.config = config;
+      config.dispose();
+
+      // register read callback on port
+      final reader = SerialPortReader(port);
+      reader.stream.listen((data) {
+        // print the raw data
+        List<String> hexList = data
+            .map((byte) => byte.toRadixString(16).padLeft(2, '0').toUpperCase())
+            .toList();
+        print(hexList);
+
+        // main read queue handler
+        _bridge.rxCallback(data);
+      });
     } catch (e) {
       // could not open port
       print("ERROR: Could not open port; $e");
@@ -118,14 +147,4 @@ class PortModel extends ChangeNotifier {
     }
     return true;
   }
-
-  /// Callback to read data from port, adding received to a list
-  /// dislayed by Terminal
-  // void _readCallback(Uint8List data) {
-  //   String str = String.fromCharCodes(data);
-  //   print("RECEIVED: $str");
-
-  //   receivedPackets.add(str);
-  //   notifyListeners();
-  // }
 }

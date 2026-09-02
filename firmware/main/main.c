@@ -31,13 +31,18 @@ void app_main(void) {
         return;
     }
 
-    // send test CAN packets
-    send_tests(this_device.deviceUUID);
-    vTaskDelay(5000 / portTICK_PERIOD_MS);  // delay to allow time to start serial monitor
-
     bridge_ret_t ret;
     CANPacket_t packet;
+    TickType_t lastTick = 0;
     while (1) {
+        // send CAN test packets every 5s; loopback will send these back,
+        // so we can test the CANPollAndReceive -> bridge_tx flow
+        TickType_t now = xTaskGetTickCount();
+        if ((now - lastTick) > pdMS_TO_TICKS(5000)) {
+            lastTick = now;
+            send_tests(this_device.deviceUUID);
+        }
+
         // forward CAN packets to UART
         if (CANPollAndReceive(NULL, &packet) == 1) {
             ret = bridge_tx(&packet);
