@@ -11,9 +11,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PortModel()),
-        ChangeNotifierProvider.value(
-          value: TerminalModel(),
-        ),
+        ChangeNotifierProvider.value(value: TerminalModel()),
       ],
       child: const MainApp(),
     ),
@@ -32,8 +30,6 @@ class MainApp extends StatelessWidget {
       try {
         // get port attributes
         SerialPort port = SerialPort(portName);
-        int? vendorId = port.vendorId;
-        int? productId = port.productId;
 
         print(
           "PORT $portName ${port.description} (${port.vendorId}, ${port.productId})",

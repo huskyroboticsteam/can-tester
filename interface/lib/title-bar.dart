@@ -99,31 +99,12 @@ class _PortSelectorState extends State<PortSelector> {
                   icon: Icon(Icons.refresh_rounded),
                   tooltip: "Refresh ports",
                   color: darkColorScheme.onPrimary,
-                  onPressed: () {
-                    // trigger a refresh of the ports list in PortModel
-                    bool refreshSuccess = Provider.of<PortModel>(
+                  onPressed: () async {
+                    final model = Provider.of<PortModel>(
                       context,
                       listen: false,
-                    ).refreshAvailablePorts();
-                    // display snackbar with success or error message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Center(
-                          child: Text(
-                            (refreshSuccess
-                                ? "Successfully refreshed ports list"
-                                : "ERROR: Could not retrieve available ports"),
-                            style: TextStyle(
-                              color: darkColorScheme.onSecondary,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                        backgroundColor: (refreshSuccess
-                            ? darkColorScheme.primary
-                            : darkColorScheme.error),
-                      ),
                     );
+                    await model.refreshAvailablePorts();
                   },
                 ),
               ),
@@ -172,12 +153,7 @@ class TitleBar extends StatelessWidget {
                       padding: EdgeInsets.only(left: 4, right: 2),
                       child: IconButton(
                         color: darkColorScheme.onSecondary,
-                        onPressed: () {
-                          // test adding a new packet to the TerminalModel
-                          CanPacket newPacket = CanPacket(uuid: 0, cmd: 1, dlc: 2, priority: true, power: true, motor: false, peripheral: true, data: [1, 2, 3], senderUuid: 12);
-                          PacketRowData newRow = PacketRowData(packet: newPacket, time: DateTime.now());
-                          TerminalModel().addRow(newRow);
-                        },
+                        onPressed: null,
                         icon: Icon(Icons.bug_report_outlined),
                         tooltip: "TEMP: Add packet to received list",
                       ),
