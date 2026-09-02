@@ -30,10 +30,7 @@ class MainApp extends StatelessWidget {
       try {
         // get port attributes
         SerialPort port = SerialPort(portName);
-
-        print(
-          "PORT $portName ${port.description} (${port.vendorId}, ${port.productId})",
-        );
+        print("PORT $portName, ${port.description}");
 
         port.dispose();
       } catch (e) {

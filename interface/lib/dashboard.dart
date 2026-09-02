@@ -31,21 +31,7 @@ class Dashboard extends StatelessWidget {
                     children: [
                       // scrollable list of DeviceCard widgets
                       ListView(children: [DeviceCard()]),
-                      // e-stop button
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: FloatingActionButton.extended(
-                            label: Text("E-STOP"),
-                            onPressed: () {},
-                            tooltip: "Not implemented: Send E-STOP",
-                            backgroundColor: darkColorScheme.primary,
-                            foregroundColor: darkColorScheme.onSecondary,
-                            icon: Icon(Icons.cancel_outlined),
-                          ),
-                        ),
-                      ),
+
                       // attribution/version message
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -65,6 +51,7 @@ class Dashboard extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 // Terminal on right-side
                 Terminal(),
               ],

@@ -1,6 +1,4 @@
-import 'package:can_interface/can.dart';
 import 'package:can_interface/serial-port.dart';
-import 'package:can_interface/terminal.dart';
 import 'package:flutter/material.dart';
 import 'package:can_interface/theme.dart';
 import 'package:provider/provider.dart';
