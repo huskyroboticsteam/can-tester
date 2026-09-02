@@ -19,6 +19,9 @@ class PacketRowData {
 class TerminalModel extends ChangeNotifier {
   final List<PacketRowData> _rows;
   final _mutex = Mutex();
+  int _packetsDropped = 0;
+  int _packetsReceived = 0;
+  int _packetsSent = 0;
 
   // singleton instance
   static final TerminalModel _instance = TerminalModel._internal();
@@ -73,6 +76,41 @@ class TerminalModel extends ChangeNotifier {
     }
 
     return buf.toString();
+  }
+
+  /// Get number of packets dropped
+  int get packetsDropped => _packetsDropped;
+
+  /// Set number packets dropped
+  void addToPacketsDropped(int difference) {
+    _packetsDropped += difference;
+    notifyListeners();
+  }
+
+  /// Get the number of packets received
+  int get packetsReceived => _packetsReceived;
+
+  /// Increment the number of packets received
+  void incrementPacketsReceived() {
+    _packetsReceived++;
+    notifyListeners();
+  }
+
+  /// Get the number of packets sent
+  int get packetsSent => _packetsSent;
+
+  /// Increment the number of packets sent
+  void incrementPacketsSent() {
+    _packetsSent++;
+    notifyListeners();
+  }
+
+  /// Set all of the RX/TX stats to 0
+  void resetStats() {
+    _packetsDropped = 0;
+    _packetsReceived = 0;
+    _packetsSent = 0;
+    notifyListeners();
   }
 }
 
@@ -266,11 +304,29 @@ class Terminal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get list of received packets from model, updating when changed.
+    // get list of received packets from model, updating when changed.
     List<PacketRowData> rows = Provider.of<TerminalModel>(
       context,
       listen: true,
     ).rows;
+
+    // get number of packets dropped
+    int packetsDropped = Provider.of<TerminalModel>(
+      context,
+      listen: true,
+    ).packetsDropped;
+
+    // get number of packets received
+    int packetsReceived = Provider.of<TerminalModel>(
+      context,
+      listen: true,
+    ).packetsReceived;
+
+    // get number of packets sent
+    int packetsSent = Provider.of<TerminalModel>(
+      context,
+      listen: true,
+    ).packetsSent;
 
     return SizedBox(
       width: 460,
@@ -335,6 +391,7 @@ class Terminal extends StatelessWidget {
               top: 6,
             ),
             child: Container(
+              padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: darkColorScheme.secondary,
                 borderRadius: BorderRadius.only(
@@ -345,42 +402,87 @@ class Terminal extends StatelessWidget {
                 ),
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: IconButton.filled(
-                      onPressed: () {
-                        Provider.of<TerminalModel>(
-                          context,
-                          listen: false,
-                        ).clearAll();
-                      },
-                      icon: Icon(Icons.delete_sweep_outlined),
-                      color: darkColorScheme.onSecondary,
-                      tooltip: "Clear all",
+                  Row(
+                    spacing: 6,
+                    children: [
+                      // clear rows button
+                      IconButton.filled(
+                        onPressed: () {
+                          Provider.of<TerminalModel>(
+                            context,
+                            listen: false,
+                          ).clearAll();
+                        },
+                        icon: Icon(Icons.delete_sweep_outlined),
+                        color: darkColorScheme.onSecondary,
+                        tooltip: "Clear rows",
+                      ),
+
+                      // reset stats button
+                      IconButton.filled(
+                        onPressed: () {
+                          Provider.of<TerminalModel>(
+                            context,
+                            listen: false,
+                          ).resetStats();
+                        },
+                        icon: Icon(Icons.restart_alt_outlined),
+                        color: darkColorScheme.onSecondary,
+                        tooltip: "Reset stats",
+                      ),
+                    ],
+                  ),
+
+                  // packets sent
+                  Tooltip(
+                    message:
+                        "This many packets were sent (receipt not verified)",
+                    child: Text(
+                      "Sent: $packetsSent",
+                      style: TextStyle(color: darkColorScheme.onSecondary),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: IconButton.filled(
-                      onPressed: () async {
-                        // get CSV as string
-                        String csv = await Provider.of<TerminalModel>(
-                          context,
-                          listen: false,
-                        ).toCsv();
 
-                        await FilePicker.saveFile(
-                          fileName: "can-packets.csv",
-                          bytes: utf8.encode(csv),
-                          mimeType: "text/csv",
-                          allowedExtensions: ["csv"],
-                        );
-                      },
-                      icon: Icon(Icons.file_download_outlined),
-                      color: darkColorScheme.onSecondary,
-                      tooltip: "Save as CSV",
+                  // packets received
+                  Tooltip(
+                    message:
+                        "This many packets were received with a valid CRC hash",
+                    child: Text(
+                      "Received: $packetsReceived",
+                      style: TextStyle(color: darkColorScheme.onSecondary),
                     ),
+                  ),
+
+                  // packets dropped
+                  Tooltip(
+                    message: "This many packets were dropped",
+                    child: Text(
+                      "Dropped: ${packetsDropped == 0 ? "0" : ">$packetsDropped"}",
+                      style: TextStyle(color: darkColorScheme.onSecondary),
+                    ),
+                  ),
+
+                  // save as CSV
+                  IconButton.filled(
+                    onPressed: () async {
+                      // get CSV as string
+                      String csv = await Provider.of<TerminalModel>(
+                        context,
+                        listen: false,
+                      ).toCsv();
+
+                      await FilePicker.saveFile(
+                        fileName: "can-packets.csv",
+                        bytes: utf8.encode(csv),
+                        mimeType: "text/csv",
+                        allowedExtensions: ["csv"],
+                      );
+                    },
+                    icon: Icon(Icons.file_download_outlined),
+                    color: darkColorScheme.onSecondary,
+                    tooltip: "Save as CSV",
                   ),
                 ],
               ),

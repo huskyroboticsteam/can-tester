@@ -8,7 +8,6 @@ import 'package:mutex/mutex.dart';
 
 const int uartFrameSize = 14;
 const int uartStartCode = 0xF0;
-const int _lastRxIndex = 0;
 
 // CRC8 calculation parameters that match the esp_rom_crc8_le() function
 final espCrc8 = ParametricCrc(
@@ -24,8 +23,17 @@ class Bridge {
   final ListQueue<int> _rxQueue = ListQueue(50);
   final _mutex = Mutex();
   final TerminalModel _term = TerminalModel();
+  int _lastRxIndex = 0;
 
   Bridge();
+
+  int _incrementLastRxIndex() {
+    _lastRxIndex++;
+    if (_lastRxIndex > 255) {
+      _lastRxIndex = 0;
+    }
+    return _lastRxIndex;
+  }
 
   void rxCallback(Uint8List data) async {
     await _mutex.acquire(); // lock
@@ -102,6 +110,24 @@ class Bridge {
           time: DateTime.now(),
         );
         _term.addRow(packetRow);
+
+        // update count of packets received
+        _term.incrementPacketsReceived();
+
+        // estimate if one or more packets were dropped
+        int frameIndex = uFrame[1]; // the index of this frame
+        int expectedFrameIndex =
+            _incrementLastRxIndex(); // the index we should receive
+        if (frameIndex != expectedFrameIndex) {
+          if (frameIndex > expectedFrameIndex) {
+            // we dropped at least this many packets (we can't know how many times it wrapped around past 255)
+            _term.addToPacketsDropped(frameIndex - expectedFrameIndex);
+          } else {
+            // if the index of this frame is less than we expect, we know it wrapped around past 255 at least once
+            _term.addToPacketsDropped((255 - expectedFrameIndex) + frameIndex + 1);
+          }
+          _lastRxIndex = frameIndex;
+        }
       }
     } finally {
       // ensure we release the mutex
