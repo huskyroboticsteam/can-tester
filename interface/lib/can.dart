@@ -37,6 +37,10 @@ class CanPacket {
     return uuidIsValid() ? uuid.toRadixString(2).padLeft(7, "0") : "-------";
   }
 
+  String uuidToHex() {
+    return uuid.toRadixString(16).padLeft(2, '0');
+  }
+
   /// If CMD is valid, convert it to binary string representation.
   /// Otherwise, return a 8-digit wide placeholder.
   String cmdToBinary() {
@@ -45,10 +49,22 @@ class CanPacket {
         : "--------";
   }
 
+  String cmdToHex() {
+    return cmd.toRadixString(16).padLeft(2, '0');
+  }
+
+  String senderUuidToHex() {
+    return senderUuid.toRadixString(16).padLeft(2, '0');
+  }
+
   /// If DLC is valid, convert it to binary string representation.
   /// Otherwise, return a 4-digit wide placeholder.
   String dlcToBinary() {
     return dlcIsValid() ? dlc.toRadixString(2).padLeft(4, "0") : "----";
+  }
+
+  String dlcToHex() {
+    return dlc.toRadixString(16);
   }
 
   /// Convert priority bit to binary string representation.
@@ -79,4 +95,56 @@ class CanPacket {
         motorToBinary() +
         peripheralToBinary();
   }
+
+  String data0ToHex() {
+    if (data.isEmpty) {
+      return "";
+    }
+    return data[0].toRadixString(16).padLeft(2, '0');
+  }
+
+  String data1ToHex() {
+    if (data.length < 2) {
+      return "";
+    }
+    return data[1].toRadixString(16).padLeft(2, '0');
+  }
+
+  String data2ToHex() {
+    if (data.length < 3) {
+      return "";
+    }
+    return data[2].toRadixString(16).padLeft(2, '0');
+  }
+
+  String data3ToHex() {
+    if (data.length < 4) {
+      return "";
+    }
+    return data[3].toRadixString(16).padLeft(2, '0');
+  }
+
+  String data4ToHex() {
+    if (data.length < 3) {
+      return "";
+    }
+    return data[4].toRadixString(16).padLeft(2, '0');
+  }
+
+  String data5ToHex() {
+    if (data.length < 6) {
+      return "";
+    }
+    return data[5].toRadixString(16).padLeft(2, '0');
+  }
+
+  String get domains => powerToBinary() + motorToBinary() + peripheralToBinary();
+
+  static String get csvHeader =>
+      "UUID, Domains, Data Len, Command, Sender UUID, "
+      "Data 0, Data 1, Data 2, Data 3, Data 4, Data 5\n";
+
+  String get csvRow =>
+      "${uuidToHex()}, $domains, $dlc, $cmd, ${senderUuidToHex()}, "
+      "${data0ToHex()}, ${data1ToHex()}, ${data2ToHex()}, ${data3ToHex()}, ${data4ToHex()}, ${data5ToHex()}\n";
 }

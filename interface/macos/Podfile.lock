@@ -1,4 +1,7 @@
 PODS:
+  - file_picker_darwin (1.0.0):
+    - Flutter
+    - FlutterMacOS
   - flutter_libserialport (0.0.1):
     - FlutterMacOS
     - libserialport
@@ -6,6 +9,7 @@ PODS:
   - libserialport (0.1.1)
 
 DEPENDENCIES:
+  - file_picker_darwin (from `Flutter/ephemeral/.symlinks/plugins/file_picker_darwin/darwin`)
   - flutter_libserialport (from `Flutter/ephemeral/.symlinks/plugins/flutter_libserialport/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
 
@@ -14,12 +18,15 @@ SPEC REPOS:
     - libserialport
 
 EXTERNAL SOURCES:
+  file_picker_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_picker_darwin/darwin
   flutter_libserialport:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_libserialport/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
 
 SPEC CHECKSUMS:
+  file_picker_darwin: 5c32d1a83c7cd2e4e2d2eaea629cf830b3b5dc49
   flutter_libserialport: 2c523cb8d8203fc6d1b0da88190da31ac970eb93
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   libserialport: 1cb25e66ef3c92a8e59c2ea3820302c3fa2268cd
