@@ -1,5 +1,4 @@
 import 'package:can_interface/can-frame.dart';
-import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 
 enum Options { priority, power, motor, peripheral }
@@ -25,7 +24,7 @@ class _DeviceCardState extends State<DeviceCard> {
       padding: const EdgeInsets.only(left: 60, right: 60, top: 60),
       child: Container(
         decoration: BoxDecoration(
-          color: darkColorScheme.secondary,
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(30),
         ),
         padding: EdgeInsets.only(top: 8),
@@ -42,7 +41,7 @@ class _DeviceCardState extends State<DeviceCard> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      color: darkColorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -58,38 +57,38 @@ class _DeviceCardState extends State<DeviceCard> {
                               uuidText = value;
                             });
                           },
-                          style: TextStyle(color: darkColorScheme.onSecondary),
-                          cursorColor: darkColorScheme.onSecondary,
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+                          cursorColor: Theme.of(context).colorScheme.onSecondary,
                           decoration: InputDecoration(
                             isDense: true,
                             // label: Center(child: Text("UUID")),
                             hint: Text(
                               "UUID",
                               style: TextStyle(
-                                color: darkColorScheme.onSecondary,
+                                color: Theme.of(context).colorScheme.onSecondary,
                                 fontSize: 16,
                               ),
                             ),
                             prefix: Text(
                               "0x",
                               style: TextStyle(
-                                color: darkColorScheme.onSecondary,
+                                color: Theme.of(context).colorScheme.onSecondary,
                                 fontSize: 16.5,
                               ),
                             ),
                             labelStyle: TextStyle(
-                              color: darkColorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),
                               borderSide: BorderSide(
-                                color: darkColorScheme.onSecondary,
+                                color: Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),
                               borderSide: BorderSide(
-                                color: darkColorScheme.onPrimary,
+                                color: Theme.of(context).colorScheme.onPrimary,
                               ),
                             ),
                           ),
@@ -103,7 +102,7 @@ class _DeviceCardState extends State<DeviceCard> {
                           value: Options.priority,
                           label: Text(
                             style: TextStyle(
-                              color: darkColorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             "Priority",
                           ),
@@ -112,7 +111,7 @@ class _DeviceCardState extends State<DeviceCard> {
                           value: Options.power,
                           label: Text(
                             style: TextStyle(
-                              color: darkColorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             "Power",
                           ),
@@ -121,7 +120,7 @@ class _DeviceCardState extends State<DeviceCard> {
                           value: Options.motor,
                           label: Text(
                             style: TextStyle(
-                              color: darkColorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             "Motor",
                           ),
@@ -130,7 +129,7 @@ class _DeviceCardState extends State<DeviceCard> {
                           value: Options.peripheral,
                           label: Text(
                             style: TextStyle(
-                              color: darkColorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             "Peripheral",
                           ),
@@ -145,8 +144,8 @@ class _DeviceCardState extends State<DeviceCard> {
                       multiSelectionEnabled: true,
                       emptySelectionAllowed: true,
                       style: SegmentedButton.styleFrom(
-                        side: BorderSide(color: darkColorScheme.onSecondary),
-                        selectedBackgroundColor: darkColorScheme.primary,
+                        side: BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+                        selectedBackgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],
@@ -164,16 +163,8 @@ class _DeviceCardState extends State<DeviceCard> {
                           });
                         },
                         icon: Icon(Icons.add_rounded),
-                        color: darkColorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         tooltip: "Add frame",
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton.filled(
-                        onPressed: () {},
-                        icon: Icon(Icons.close_rounded),
-                        tooltip: "Not implemented: Remove this device",
                       ),
                     ),
                   ],

@@ -1,6 +1,5 @@
 import 'package:can_interface/serial-port.dart';
 import 'package:flutter/material.dart';
-import 'package:can_interface/theme.dart';
 import 'package:provider/provider.dart';
 
 class PortSelector extends StatefulWidget {
@@ -23,7 +22,7 @@ class _PortSelectorState extends State<PortSelector> {
       builder: (context, model, child) {
         return Container(
           decoration: BoxDecoration(
-            color: darkColorScheme.secondary,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(30),
           ),
           padding: EdgeInsets.symmetric(horizontal: 8),
@@ -44,9 +43,9 @@ class _PortSelectorState extends State<PortSelector> {
                   },
                   hint: Text(
                     (availablePorts.isEmpty ? "No Ports Found" : "Select Port"),
-                    style: TextStyle(color: darkColorScheme.onPrimary),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                   ),
-                  dropdownColor: darkColorScheme.secondary,
+                  dropdownColor: Theme.of(context).colorScheme.secondary,
                   underline: Container(
                     // remove underline
                     height: 0,
@@ -66,7 +65,7 @@ class _PortSelectorState extends State<PortSelector> {
                               child: Text(
                                 portInfo.name,
                                 style: TextStyle(
-                                  color: darkColorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   fontSize: 14.5,
                                   fontFamily: "JetBrainsMono",
                                 ),
@@ -77,7 +76,7 @@ class _PortSelectorState extends State<PortSelector> {
                             Text(
                               portInfo.description ?? "--",
                               style: TextStyle(
-                                color: darkColorScheme.onSecondary,
+                                color: Theme.of(context).colorScheme.onSecondary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -96,7 +95,7 @@ class _PortSelectorState extends State<PortSelector> {
                 child: IconButton(
                   icon: Icon(Icons.refresh_rounded),
                   tooltip: "Refresh ports",
-                  color: darkColorScheme.onPrimary,
+                  color: Theme.of(context).colorScheme.onPrimary,
                   onPressed: () async {
                     final model = Provider.of<PortModel>(
                       context,
@@ -126,7 +125,7 @@ class TitleBar extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
-          color: darkColorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -135,7 +134,7 @@ class TitleBar extends StatelessWidget {
                 child: Text(
                   "CAN Tester",
                   style: TextStyle(
-                    color: darkColorScheme.onSecondary,
+                    color: Theme.of(context).colorScheme.onSecondary,
                     fontSize: 26,
                     fontWeight: FontWeight.w700,
                   ),
@@ -150,7 +149,7 @@ class TitleBar extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 4, right: 2),
                       child: IconButton(
-                        color: darkColorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         onPressed: null,
                         icon: Icon(Icons.bug_report_outlined),
                         tooltip: "TEMP: Add packet to received list",
@@ -159,16 +158,16 @@ class TitleBar extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 2),
                       child: IconButton(
-                        color: darkColorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         onPressed: () {},
-                        icon: Icon(Icons.help_outline_rounded),
+                        icon: Icon(Icons.question_mark_rounded),
                         tooltip: "Not implemented: Help",
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 2, right: 8),
                       child: IconButton(
-                        color: darkColorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         onPressed: () {},
                         icon: Icon(Icons.add_rounded),
                         tooltip: "Not implemented: Add another device",

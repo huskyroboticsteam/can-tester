@@ -4,7 +4,6 @@ import 'package:can_interface/can.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:can_interface/theme.dart';
 import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
 
@@ -183,9 +182,9 @@ class _PacketRowState extends State<PacketRow> {
     String row =
         "$time $uuid $domains $dlc $cmd $sender $data0 $data1 $data2 $data3 $data4 $data5";
 
-    final Color accent = darkColorScheme.onPrimary;
-    final Color simple = darkColorScheme.onSecondary;
-    final Color highlight = darkColorScheme.surface;
+    final Color accent = Theme.of(context).colorScheme.onPrimary;
+    final Color simple = Theme.of(context).colorScheme.onSecondary;
+    final Color highlight = Theme.of(context).colorScheme.surface;
 
     return MouseRegion(
       onEnter: (_) => setState(() {
@@ -336,9 +335,9 @@ class Terminal extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Container(
-              height: 106,
+              padding: EdgeInsets.only(top: 12, bottom: 12),
               decoration: BoxDecoration(
-                color: darkColorScheme.secondary,
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
@@ -346,7 +345,16 @@ class Terminal extends StatelessWidget {
                   bottomRight: Radius.circular(8),
                 ),
               ),
-              child: Center(child: Text("Filters")),
+              child: Center(
+                child: Text(
+                  "Terminal",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
             ),
           ),
 
@@ -357,14 +365,14 @@ class Terminal extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: darkColorScheme.secondary,
+                  color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.2),
                 ),
                 child: (rows.isEmpty)
                     // If no packets have been received yet, display a message
                     ? Center(
                         child: Text(
                           "Packets received will appear here",
-                          style: TextStyle(color: darkColorScheme.onSecondary),
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)),
                         ),
                       )
                     // Display the received packets
@@ -393,7 +401,7 @@ class Terminal extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: darkColorScheme.secondary,
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(25),
                   bottomRight: Radius.circular(25),
@@ -416,7 +424,7 @@ class Terminal extends StatelessWidget {
                           ).clearAll();
                         },
                         icon: Icon(Icons.delete_sweep_outlined),
-                        color: darkColorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         tooltip: "Clear rows",
                       ),
 
@@ -429,7 +437,7 @@ class Terminal extends StatelessWidget {
                           ).resetStats();
                         },
                         icon: Icon(Icons.restart_alt_outlined),
-                        color: darkColorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         tooltip: "Reset stats",
                       ),
                     ],
@@ -441,7 +449,7 @@ class Terminal extends StatelessWidget {
                         "This many packets were sent (receipt not verified)",
                     child: Text(
                       "Sent: $packetsSent",
-                      style: TextStyle(color: darkColorScheme.onSecondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
                     ),
                   ),
 
@@ -451,7 +459,7 @@ class Terminal extends StatelessWidget {
                         "This many packets were received with a valid CRC hash",
                     child: Text(
                       "Received: $packetsReceived",
-                      style: TextStyle(color: darkColorScheme.onSecondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
                     ),
                   ),
 
@@ -460,7 +468,7 @@ class Terminal extends StatelessWidget {
                     message: "This many packets were dropped",
                     child: Text(
                       "Dropped: ${packetsDropped == 0 ? "0" : ">$packetsDropped"}",
-                      style: TextStyle(color: darkColorScheme.onSecondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
                     ),
                   ),
 
@@ -481,7 +489,7 @@ class Terminal extends StatelessWidget {
                       );
                     },
                     icon: Icon(Icons.file_download_outlined),
-                    color: darkColorScheme.onSecondary,
+                    color: Theme.of(context).colorScheme.onSecondary,
                     tooltip: "Save as CSV",
                   ),
                 ],

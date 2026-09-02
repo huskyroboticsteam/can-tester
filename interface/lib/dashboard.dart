@@ -1,5 +1,4 @@
 import 'package:can_interface/device-card.dart';
-import 'package:can_interface/theme.dart';
 import 'package:can_interface/title-bar.dart';
 import 'package:can_interface/terminal.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(20, 18, 23, 1),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
           // title bar
@@ -43,7 +42,7 @@ class Dashboard extends StatelessWidget {
                           child: Text(
                             "Alpha 0.1.0 by Rishi Roy",
                             style: TextStyle(
-                              color: darkColorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                           ),
                         ),

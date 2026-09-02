@@ -1,4 +1,3 @@
-import 'package:can_interface/theme.dart';
 import 'package:flutter/material.dart';
 
 class CanFrame extends StatefulWidget {
@@ -74,7 +73,7 @@ class _CanFrameState extends State<CanFrame> {
 
     return Container(
       decoration: BoxDecoration(
-        color: darkColorScheme.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       padding: EdgeInsets.only(left: 18, right: 18, top: 12, bottom: 16),
@@ -93,7 +92,7 @@ class _CanFrameState extends State<CanFrame> {
                       style: TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.w600,
-                        color: darkColorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                     Expanded(
@@ -102,7 +101,7 @@ class _CanFrameState extends State<CanFrame> {
                           generatedPacket,
                           style: TextStyle(
                             fontFamily: "JetBrainsMono",
-                            color: darkColorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 15.5,
                           ),
                         ),
@@ -128,12 +127,12 @@ class _CanFrameState extends State<CanFrame> {
                                   });
                                 },
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "CMD",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -150,12 +149,12 @@ class _CanFrameState extends State<CanFrame> {
                                   });
                                 },
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "DLC",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -171,12 +170,12 @@ class _CanFrameState extends State<CanFrame> {
                               width: 90,
                               child: TextField(
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "B0",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -188,12 +187,12 @@ class _CanFrameState extends State<CanFrame> {
                               width: 90,
                               child: TextField(
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "B1",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -205,12 +204,12 @@ class _CanFrameState extends State<CanFrame> {
                               width: 90,
                               child: TextField(
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "B2",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -222,12 +221,12 @@ class _CanFrameState extends State<CanFrame> {
                               width: 90,
                               child: TextField(
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "B3",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -239,12 +238,12 @@ class _CanFrameState extends State<CanFrame> {
                               width: 90,
                               child: TextField(
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "B4",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -256,12 +255,12 @@ class _CanFrameState extends State<CanFrame> {
                               width: 90,
                               child: TextField(
                                 style: TextStyle(
-                                  color: darkColorScheme.onSecondary,
+                                  color: Theme.of(context).colorScheme.onSecondary,
                                 ),
                                 decoration: InputDecoration(
                                   labelText: "B5",
                                   labelStyle: TextStyle(
-                                    color: darkColorScheme.onSecondary,
+                                    color: Theme.of(context).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -285,14 +284,14 @@ class _CanFrameState extends State<CanFrame> {
                       print("SEND pressed");
                     },
                     icon: Icon(Icons.arrow_upward_rounded),
-                    color: darkColorScheme.onSecondary,
+                    color: Theme.of(context).colorScheme.onSecondary,
                     tooltip: "Send packet",
                   )
                 // there is an input error, so show dummy button with message
                 : IconButton.filled(
                     onPressed: null,
                     icon: Icon(Icons.error_outline_rounded),
-                    disabledColor: darkColorScheme.onError,
+                    disabledColor: Theme.of(context).colorScheme.onError,
                     tooltip: errorList.join("; "),
                   )),
           ),

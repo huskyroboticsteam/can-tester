@@ -40,7 +40,9 @@ class MainApp extends StatelessWidget {
 
     return MaterialApp(
       title: "CAN Tester",
-      theme: ThemeData(colorScheme: darkColorScheme),
+      theme: ThemeData(colorScheme: lightColorScheme),
+      darkTheme: ThemeData(colorScheme: darkColorScheme),
+      themeMode: ThemeMode.system,
       home: Dashboard(),
     );
   }
